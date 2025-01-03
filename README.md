@@ -1,6 +1,7 @@
 # bear
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/chasespace/bear)](https://goreportcard.com/report/github.com/chaseSpace/bear)
+[![Go Reference](https://pkg.go.dev/badge/github.com/chasespace/bear.svg)](https://pkg.go.dev/github.com/chaseSpace/bear)
 
 bear, Focusing on **Data Structure Processing** (Using Generic) in golang.
 
