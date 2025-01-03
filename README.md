@@ -46,8 +46,8 @@ func main() {
 
 	// Use Sum() of ComputableSlice
 	var s3 = bear.NewComputableSlice(2.0, 3.0, 4.0)
-	var sum = s3.Append(5.0).Sum()
-	fmt.Println("Sum:", sum) // 14
+	var sum = s3.Append(5.0).PopLeft().Append(6.0).Avg()
+	fmt.Println("Sum:", sum) // 4.55
 	// For ComputableSlice, you can also call Max()/Min()/Avg().
 }
 
