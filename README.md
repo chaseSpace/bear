@@ -5,8 +5,8 @@
 
 bear, focusing on **Data Structure Processing** (Using Generic) in golang.
 
-**NOTE**: All APIs is **not** concurrency-safe. We're doing less work like stdlib, so you also should use it like
-use stdlib.
+**NOTE**: All APIs is **not** concurrency-safe. We're doing less work like most of stdlib APIs, so you also should use it like
+use stdlib APIs.
 
 Min Go version: 1.18
 
