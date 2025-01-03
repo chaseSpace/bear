@@ -1,21 +1,21 @@
-# Sabre
+# bear
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/chasespace/sabre)](https://goreportcard.com/report/github.com/chasespace/sabre)
+[![Go Report Card](https://goreportcard.com/badge/github.com/chasespace/bear)](https://goreportcard.com/report/github.com/chaseSpace/bear)
 
-Sabre of golang, Focusing on **Data Structure Processing** (Using Generic).
+bear, Focusing on **Data Structure Processing** (Using Generic) in golang.
 
 Min Go version: 1.18
 
 ## Download
 
 ```shell
-go get -u github.com/chasespace/sabre
+go get -u github.com/chaseSpace/bear
 ```
 
 ## Import
 
 ```
-import "github.com/chasespace/sabre"
+import "github.com/chaseSpace/bear"
 ```
 
 ## Examples
@@ -25,7 +25,7 @@ For now, only support slice operations.
 To create new slice:
 
 ```go
-slice := sabre.NewSlice(1, 2, 3, 4, 5) // there could be any "comparable" type for element
+slice := bear.NewSlice(1, 2, 3, 4, 5) // there could be any "comparable" type for element
 fmt.Println("Created slice:", slice.Slice()) // [1 2 3 4 5]
 ```
 
@@ -71,7 +71,7 @@ fmt.Println("Contains 3:", containsThree) // true
 To get after-duplicates slice:
 
 ```go
-slice := sabre.NewSlice(1, 2, 2, 4, 4)
+slice := bear.NewSlice(1, 2, 2, 4, 4)
 uniqueSlice := slice.Unique()
 fmt.Println("Unique slice:", uniqueSlice.Slice()) // [1 2 4]
 ```
