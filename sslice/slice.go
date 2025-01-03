@@ -81,6 +81,24 @@ func (s *Slice[T]) Shuffle() *Slice[T] {
 	return s
 }
 
+// PopLeft pops the rightmost element in Slice.
+func (s *Slice[T]) PopLeft() *Slice[T] {
+	if len(s.data) == 0 {
+		return s
+	}
+	s.data = s.data[1:]
+	return s
+}
+
+// PopRight pops the rightmost element in Slice.
+func (s *Slice[T]) PopRight() *Slice[T] {
+	if len(s.data) == 0 {
+		return s
+	}
+	s.data = s.data[:len(s.data)-1]
+	return s
+}
+
 // ------------------ split line ------------------------
 // - Below are non-chain methods.
 

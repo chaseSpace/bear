@@ -10,15 +10,6 @@ func NewComputableSlice[T constraints.Computable](data ...T) *ComputableSlice[T]
 	return &ComputableSlice[T]{slice: New(data...)}
 }
 
-// Sum returns the sum of all elements in the slice.
-func (s *ComputableSlice[T]) Sum() T {
-	var sum T
-	for _, item := range s.slice.data {
-		sum += item
-	}
-	return sum
-}
-
 // Append appends data to the end of ComputableSlice.
 func (s *ComputableSlice[T]) Append(data ...T) *ComputableSlice[T] {
 	s.slice.Append(data...)
@@ -60,8 +51,29 @@ func (s *ComputableSlice[T]) Shuffle() *ComputableSlice[T] {
 	return s
 }
 
+// PopLeft pops the leftmost element in ComputableSlice.
+func (s *ComputableSlice[T]) PopLeft() *ComputableSlice[T] {
+	s.slice.PopLeft()
+	return s
+}
+
+// PopRight pops the rightmost element in ComputableSlice.
+func (s *ComputableSlice[T]) PopRight() *ComputableSlice[T] {
+	s.slice.PopRight()
+	return s
+}
+
 // ------------------ split line ------------------------
 // - Below are non-chain methods.
+
+// Sum returns the sum of all elements in the slice.
+func (s *ComputableSlice[T]) Sum() T {
+	var sum T
+	for _, item := range s.slice.data {
+		sum += item
+	}
+	return sum
+}
 
 // Slice returns a copy of the elements in ComputableSlice.
 func (s *ComputableSlice[T]) Slice() (copied []T) {

@@ -70,6 +70,18 @@ func (s *OrderedSlice[T]) Shuffle() *OrderedSlice[T] {
 	return s
 }
 
+// PopLeft pops the leftmost element in OrderedSlice.
+func (s *OrderedSlice[T]) PopLeft() *OrderedSlice[T] {
+	s.slice.PopLeft()
+	return s
+}
+
+// PopRight pops the rightmost element in OrderedSlice.
+func (s *OrderedSlice[T]) PopRight() *OrderedSlice[T] {
+	s.slice.PopRight()
+	return s
+}
+
 // ------------------ split line ------------------------
 // - Below are non-chain methods.
 

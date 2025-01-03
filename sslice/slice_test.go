@@ -249,3 +249,41 @@ func TestJoin_StringSlice_ReturnsJoinedString(t *testing.T) {
 		t.Errorf("Expected 'a,b,c', got %s", result)
 	}
 }
+
+// TestPopLeft_EmptySlice_NoChange tests PopLeft on an empty slice.
+func TestPopLeft_EmptySlice_NoChange(t *testing.T) {
+	s := New[int]()
+	result := s.PopLeft()
+	if !reflect.DeepEqual(result.data, []int{}) {
+		t.Errorf("Expected empty slice, got %v", result.data)
+	}
+}
+
+// TestPopLeft_NonEmptySlice_RemovesFirstElement tests PopLeft on a non-empty slice.
+func TestPopLeft_NonEmptySlice_RemovesFirstElement(t *testing.T) {
+	s := New(1, 2, 3)
+	result := s.PopLeft()
+	expected := []int{2, 3}
+	if !reflect.DeepEqual(result.data, expected) {
+		t.Errorf("Expected %v, got %v", expected, result.data)
+	}
+}
+
+// TestPopRight_EmptySlice_NoChange tests PopRight on an empty slice.
+func TestPopRight_EmptySlice_NoChange(t *testing.T) {
+	s := &Slice[int]{data: []int{}}
+	result := s.PopRight()
+	if !reflect.DeepEqual(result.data, []int{}) {
+		t.Errorf("Expected empty slice, got %v", result.data)
+	}
+}
+
+// TestPopRight_NonEmptySlice_RemovesLastElement tests PopRight on a non-empty slice.
+func TestPopRight_NonEmptySlice_RemovesLastElement(t *testing.T) {
+	s := New(1, 2, 3)
+	result := s.PopRight()
+	expected := []int{1, 2}
+	if !reflect.DeepEqual(result.data, expected) {
+		t.Errorf("Expected %v, got %v", expected, result.data)
+	}
+}
