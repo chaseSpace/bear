@@ -25,5 +25,5 @@ type Ordered interface {
 }
 
 type Computable interface {
-	Integer | Float | Complex
+	Integer | Float // Note: the complex type cannot compare sizes, it cannot sort and calculate the average.
 }

@@ -1,6 +1,9 @@
 package sslice
 
-import "github.com/chaseSpace/bear/constraints"
+import (
+	"github.com/chaseSpace/bear/constraints"
+	"sort"
+)
 
 type ComputableSlice[T constraints.Computable] struct {
 	slice *Slice[T]
@@ -8,6 +11,22 @@ type ComputableSlice[T constraints.Computable] struct {
 
 func NewComputableSlice[T constraints.Computable](data ...T) *ComputableSlice[T] {
 	return &ComputableSlice[T]{slice: New(data...)}
+}
+
+// Sort sorts the elements in ComputableSlice in ascending order by default. If true is passed,
+// it sorts in descending order.
+func (s *ComputableSlice[T]) Sort(desc ...bool) *ComputableSlice[T] {
+	if len(desc) > 0 && desc[0] { // desc sort
+		sort.Slice(s.slice.data, func(i, j int) bool {
+			return s.slice.data[i] > s.slice.data[j]
+		})
+		return s
+	}
+	// asc sort
+	sort.Slice(s.slice.data, func(i, j int) bool {
+		return s.slice.data[i] < s.slice.data[j]
+	})
+	return s
 }
 
 // Append appends data to the end of ComputableSlice.
@@ -73,6 +92,26 @@ func (s *ComputableSlice[T]) Sum() T {
 		sum += item
 	}
 	return sum
+}
+
+// Max returns the maximum element in ComputableSlice.
+func (s *ComputableSlice[T]) Max() T {
+	var cp = NewComputableSlice(s.slice.Clone().data...).Sort(true)
+	return cp.slice.data[0]
+}
+
+// Min returns the minimum element in ComputableSlice.
+func (s *ComputableSlice[T]) Min() T {
+	var cp = NewComputableSlice(s.slice.Clone().data...).Sort()
+	return cp.slice.data[0]
+}
+
+// Avg returns the average of all elements in the slice.
+func (s *ComputableSlice[T]) Avg() T {
+	if s.Len() == 0 {
+		return T(0)
+	}
+	return s.Sum() / T(s.Len())
 }
 
 // Slice returns a copy of the elements in ComputableSlice.
