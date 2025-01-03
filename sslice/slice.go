@@ -1,14 +1,21 @@
 package sslice
 
+import "math/rand"
+
 type Slice[T comparable] struct {
-	data []T
+	data   []T
+	sortFn func([]T, ...bool)
 }
 
+// New creates a new ptr of Slice type.
 func New[T comparable](data ...T) *Slice[T] {
+	if len(data) == 0 {
+		data = []T{}
+	}
 	return &Slice[T]{data: data}
 }
 
-// Append appends data to the slice. It returns the slice itself.
+// Append appends data to the slice. It returns the Slice itself.
 func (s *Slice[T]) Append(data ...T) *Slice[T] {
 	s.data = append(s.data, data...)
 	return s
@@ -20,7 +27,7 @@ func (s *Slice[T]) Clone() *Slice[T] {
 	return &Slice[T]{data: copied}
 }
 
-// Filter filters the slice. It returns the slice itself.
+// Filter filters the slice. It returns the Slice itself.
 func (s *Slice[T]) Filter(f func(T) bool) *Slice[T] {
 	var filtered []T
 	for _, item := range s.data {
@@ -32,7 +39,7 @@ func (s *Slice[T]) Filter(f func(T) bool) *Slice[T] {
 	return s
 }
 
-// Map maps the slice. It returns the slice itself.
+// Map maps the slice. It returns the Slice itself.
 func (s *Slice[T]) Map(f func(T) T) *Slice[T] {
 	for i, item := range s.data {
 		s.data[i] = f(item)
@@ -40,15 +47,7 @@ func (s *Slice[T]) Map(f func(T) T) *Slice[T] {
 	return s
 }
 
-func (s *Slice[T]) Contains(item T) bool {
-	for _, i := range s.data {
-		if i == item {
-			return true
-		}
-	}
-	return false
-}
-
+// Unique removes duplicate items from the slice. It returns the Slice itself.
 func (s *Slice[T]) Unique() *Slice[T] {
 	var duplicates = make(map[T]struct{})
 	var unique []T
@@ -59,6 +58,22 @@ func (s *Slice[T]) Unique() *Slice[T] {
 		}
 	}
 	s.data = unique
+	return s
+}
+
+// Reverse reverses the slice. It returns the Slice itself.
+func (s *Slice[T]) Reverse() *Slice[T] {
+	for i, j := 0, len(s.data)-1; i < j; i, j = i+1, j-1 {
+		s.data[i], s.data[j] = s.data[j], s.data[i]
+	}
+	return s
+}
+
+// Shuffle shuffles the slice. It returns the Slice itself.
+func (s *Slice[T]) Shuffle() *Slice[T] {
+	rand.Shuffle(len(s.data), func(i, j int) {
+		s.data[i], s.data[j] = s.data[j], s.data[i]
+	})
 	return s
 }
 
@@ -77,6 +92,16 @@ func (s *Slice[T]) Len() int {
 	return len(s.data)
 }
 
+// Contains returns true if the slice contains the item.
+func (s *Slice[T]) Contains(item T) bool {
+	for _, i := range s.data {
+		if i == item {
+			return true
+		}
+	}
+	return false
+}
+
 // Reduce reduces the slice to a single value.
 func (s *Slice[T]) Reduce(f func(x, y T) T) T {
 	if len(s.data) == 0 {
@@ -88,4 +113,32 @@ func (s *Slice[T]) Reduce(f func(x, y T) T) T {
 		result = f(result, item)
 	}
 	return result
+}
+
+// Equal returns true if the slice is equal to the other Slice.
+func (s *Slice[T]) Equal(other *Slice[T]) bool {
+	if len(s.data) != len(other.data) {
+		return false
+	}
+	for i, item := range s.data {
+		if item != other.data[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// IndexOf returns the index of the item in the slice. If the item is not found, it returns -1.
+func (s *Slice[T]) IndexOf(item T) int {
+	for i, v := range s.data {
+		if v == item {
+			return i
+		}
+	}
+	return -1
+}
+
+// Get returns the item at the given index.
+func (s *Slice[T]) Get(index int) T {
+	return s.data[index]
 }

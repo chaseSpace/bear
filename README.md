@@ -3,7 +3,10 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/chasespace/bear)](https://goreportcard.com/report/github.com/chaseSpace/bear)
 [![Go Reference](https://pkg.go.dev/badge/github.com/chasespace/bear.svg)](https://pkg.go.dev/github.com/chaseSpace/bear)
 
-bear, Focusing on **Data Structure Processing** (Using Generic) in golang.
+bear, focusing on **Data Structure Processing** (Using Generic) in golang.
+
+**NOTE**: All APIs is **not** concurrency-safe. We're doing less work like stdlib, so you also should use it like
+use stdlib.
 
 Min Go version: 1.18
 
@@ -19,72 +22,48 @@ go get -u github.com/chaseSpace/bear
 import "github.com/chaseSpace/bear"
 ```
 
-## Examples
+## Quick Start
 
+```
+
+```
 For now, only support slice operations.
 
-To create new slice:
+### Slice API Documentation
 
-```go
-slice := bear.NewSlice(1, 2, 3, 4, 5) // there could be any "comparable" type for element
-fmt.Println("Created slice:", slice.Slice()) // [1 2 3 4 5]
-```
+The `Slice` type provides a convenient interface for common slice operations.
 
-To append data to slice:
+| Method                        | Description                                                                               |
+|-------------------------------|-------------------------------------------------------------------------------------------|
+| `Append(data ...T)`           | Appends new elements to the slice and returns the updated slice.                          |
+| `Clone()`                     | Returns a new slice that is a copy of the original slice.                                 |
+| `Filter(f func(T) bool)`      | Filters the slice based on the provided predicate function and returns the slice.         |
+| `Map(f func(T) T)`            | Applies a function to each element of the slice and returns the mapped slice.             |
+| `Unique()`                    | Removes duplicate items from the slice and returns the slice.                             |
+| `Reverse()`                   | Reverses the order of elements in the slice and returns the slice.                        |
+| `Shuffle()`                   | Randomly shuffles the elements in the slice and returns the slice.                        |
+| `Slice() []T`                 | Returns a copy of the slice as a standard Go slice.                                       |
+| `Len() int`                   | Returns the number of elements in the slice.                                              |
+| `Contains(item T) bool`       | Checks if the slice contains a specific item and returns a boolean.                       |
+| `Reduce(f func(x, y T) T)`    | Reduces the slice to a single value by applying a function.                               |
+| `Equal(other *Slice[T]) bool` | Compares the slice with another slice and returns a boolean.                              |
+| `IndexOf(item T) int`         | Returns the index of a specific item or -1 if not found.                                  |
+| `Sum()`                       | [**ComputableSlice**] Sum returns the sum of all elements in the slice.                   |
+| `Sort(desc ...bool)`          | [**OrderedSlice**] Sort sorts the elements in OrderedSlice in ascending order by default. |
 
-```go
-slice.Append(6, 7, 8)
-fmt.Println("Appended slice:", slice.Slice()) // [1 2 3 4 5 6 7 8]
-```
+#### Slice Non-Chain Methods
 
-To clone slice:
+These methods do not return a pointer to the `Slice` type, hence they do not support method chaining.
 
-```go
-clonedSlice := slice.Clone()
-fmt.Println("Cloned slice:", clonedSlice.Slice()) // [1 2 3 4 5]
-```
-
-To keep even numbers in slice:
-
-```go
-filteredSlice := slice.Filter(func (item int) bool {
-return item%2 == 0
-})
-fmt.Println("Filtered slice:", filteredSlice.Slice()) // [2 4]
-```
-
-To map per element`*`2 in slice:
-
-```go
-mappedSlice := slice.Map(func (item int) int {
-return item * 2
-})
-fmt.Println("Mapped slice:", mappedSlice.Slice()) // [2 4 6 8 10]
-```
-
-To check if slice contains `3`:
-
-```go
-containsThree := slice.Contains(3)
-fmt.Println("Contains 3:", containsThree) // true
-```
-
-To get after-duplicates slice:
-
-```go
-slice := bear.NewSlice(1, 2, 2, 4, 4)
-uniqueSlice := slice.Unique()
-fmt.Println("Unique slice:", uniqueSlice.Slice()) // [1 2 4]
-```
-
-To reduce slice to total:
-
-```go
-total := slice.Reduce(func (x, y int) int {
-return x + y
-})
-fmt.Println("Total:", total) // 15
-```
+| Method                        | Description                                                         |
+|-------------------------------|---------------------------------------------------------------------|
+| `Slice() []T`                 | Returns a copy of the slice as a standard Go slice.                 |
+| `Len() int`                   | Returns the length of the slice.                                    |
+| `Contains(item T) bool`       | Checks if the slice contains a specific item and returns a boolean. |
+| `Reduce(f func(x, y T) T) T`  | Reduces the slice to a single value by applying a function.         |
+| `Equal(other *Slice[T]) bool` | Compares the slice with another slice and returns a boolean.        |
+| `IndexOf(item T) int`         | Returns the index of a specific item or -1 if not found.            |
+| `Get(index int) T`            | Returns the item at the given index.                                |
 
 ## License
 
