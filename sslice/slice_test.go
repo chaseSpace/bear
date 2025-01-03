@@ -225,3 +225,27 @@ func TestReverse_DuplicateElements_ShouldReverseCorrectly(t *testing.T) {
 		t.Errorf("Expected %v, got %v", expected, s.data)
 	}
 }
+
+func TestJoin_MultipleElements_ReturnsJoinedString(t *testing.T) {
+	os := New(1, 2, 3)
+	result := os.Join(",")
+	if result != "1,2,3" {
+		t.Errorf("Expected '1,2,3', got %s", result)
+	}
+}
+
+func TestJoin_DifferentSeparator_ReturnsJoinedStringWithSeparator(t *testing.T) {
+	os := New(1, 2, 3)
+	result := os.Join("-")
+	if result != "1-2-3" {
+		t.Errorf("Expected '1-2-3', got %s", result)
+	}
+}
+
+func TestJoin_StringSlice_ReturnsJoinedString(t *testing.T) {
+	os := New("a", "b", "c")
+	result := os.Join(",")
+	if result != "a,b,c" {
+		t.Errorf("Expected 'a,b,c', got %s", result)
+	}
+}

@@ -102,3 +102,8 @@ func (s *OrderedSlice[T]) Equal(other *OrderedSlice[T]) bool {
 func (s *OrderedSlice[T]) IndexOf(item T) int {
 	return s.slice.IndexOf(item)
 }
+
+// Join joins the elements in OrderedSlice by the given separator.
+func (s *OrderedSlice[T]) Join(sep string) string {
+	return s.slice.Join(sep)
+}

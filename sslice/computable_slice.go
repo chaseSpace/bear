@@ -92,3 +92,8 @@ func (s *ComputableSlice[T]) Equal(other *ComputableSlice[T]) bool {
 func (s *ComputableSlice[T]) IndexOf(item T) int {
 	return s.slice.IndexOf(item)
 }
+
+// Join joins the elements in ComputableSlice by the given separator.
+func (s *ComputableSlice[T]) Join(sep string) string {
+	return s.slice.Join(sep)
+}

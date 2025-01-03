@@ -1,6 +1,10 @@
 package sslice
 
-import "math/rand"
+import (
+	"fmt"
+	"math/rand"
+	"strings"
+)
 
 type Slice[T comparable] struct {
 	data   []T
@@ -141,4 +145,13 @@ func (s *Slice[T]) IndexOf(item T) int {
 // Get returns the item at the given index.
 func (s *Slice[T]) Get(index int) T {
 	return s.data[index]
+}
+
+// Join joins the elements in Slice by the given separator.
+func (s *Slice[T]) Join(sep string) string {
+	var ss []string
+	for _, item := range s.data {
+		ss = append(ss, fmt.Sprintf("%v", item))
+	}
+	return strings.Join(ss, sep)
 }
