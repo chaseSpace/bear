@@ -148,3 +148,8 @@ func (s *ComputableSlice[T]) IndexOf(item T) int {
 func (s *ComputableSlice[T]) Join(sep string) string {
 	return s.slice.Join(sep)
 }
+
+// IsEmpty returns true if the underlying slice is empty.
+func (s *ComputableSlice[T]) IsEmpty() bool {
+	return s.slice.IsEmpty()
+}

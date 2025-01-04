@@ -173,3 +173,8 @@ func (s *Slice[T]) Join(sep string) string {
 	}
 	return strings.Join(ss, sep)
 }
+
+// IsEmpty returns true if the underlying slice is empty.
+func (s *Slice[T]) IsEmpty() bool {
+	return len(s.data) == 0
+}

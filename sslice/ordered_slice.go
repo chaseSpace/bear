@@ -119,3 +119,8 @@ func (s *OrderedSlice[T]) IndexOf(item T) int {
 func (s *OrderedSlice[T]) Join(sep string) string {
 	return s.slice.Join(sep)
 }
+
+// IsEmpty returns true if the underlying slice is empty.
+func (s *OrderedSlice[T]) IsEmpty() bool {
+	return s.slice.IsEmpty()
+}

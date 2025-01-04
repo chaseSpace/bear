@@ -89,6 +89,7 @@ These methods do not return a pointer to theSlicetype, hence they do not support
 | Max()      | [**ComputableSlice**] Max returns the maximum value in the ComputableSlice.           |
 | Min()      | [**ComputableSlice**] Min returns the minimum value in the ComputableSlice.           |
 | Avg()      | [**ComputableSlice**] Avg returns the average of all elements in the ComputableSlice. |
+| IsEmpty()  | Checks if the underlying slice is empty.                                              |
 
 ### Set API Documentation
 
