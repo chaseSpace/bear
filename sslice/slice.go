@@ -12,16 +12,16 @@ type Slice[T comparable] struct {
 }
 
 // New creates a new ptr of Slice type.
-func New[T comparable](data ...T) *Slice[T] {
-	if len(data) == 0 {
-		data = []T{}
+func New[T comparable](items ...T) *Slice[T] {
+	if len(items) == 0 {
+		items = []T{}
 	}
-	return &Slice[T]{data: data}
+	return &Slice[T]{data: items}
 }
 
 // Append appends data to the slice. It returns the Slice itself.
-func (s *Slice[T]) Append(data ...T) *Slice[T] {
-	s.data = append(s.data, data...)
+func (s *Slice[T]) Append(items ...T) *Slice[T] {
+	s.data = append(s.data, items...)
 	return s
 }
 

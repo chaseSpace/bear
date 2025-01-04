@@ -9,8 +9,8 @@ type OrderedSlice[T constraints.Ordered] struct {
 	slice *Slice[T]
 }
 
-func NewOrderedSlice[T constraints.Ordered](data ...T) *OrderedSlice[T] {
-	return &OrderedSlice[T]{slice: New[T](data...)}
+func NewOrderedSlice[T constraints.Ordered](items ...T) *OrderedSlice[T] {
+	return &OrderedSlice[T]{slice: New[T](items...)}
 }
 
 // Sort sorts the elements in OrderedSlice in ascending order by default. If true is passed,
@@ -30,8 +30,8 @@ func (s *OrderedSlice[T]) Sort(desc ...bool) *OrderedSlice[T] {
 }
 
 // Append appends data to the end of OrderedSlice.
-func (s *OrderedSlice[T]) Append(data ...T) *OrderedSlice[T] {
-	s.slice.Append(data...)
+func (s *OrderedSlice[T]) Append(items ...T) *OrderedSlice[T] {
+	s.slice.Append(items...)
 	return s
 }
 

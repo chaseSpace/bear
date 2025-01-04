@@ -9,8 +9,8 @@ type ComputableSlice[T constraints.Computable] struct {
 	slice *Slice[T]
 }
 
-func NewComputableSlice[T constraints.Computable](data ...T) *ComputableSlice[T] {
-	return &ComputableSlice[T]{slice: New(data...)}
+func NewComputableSlice[T constraints.Computable](items ...T) *ComputableSlice[T] {
+	return &ComputableSlice[T]{slice: New(items...)}
 }
 
 // Sort sorts the elements in ComputableSlice in ascending order by default. If true is passed,
@@ -30,8 +30,8 @@ func (s *ComputableSlice[T]) Sort(desc ...bool) *ComputableSlice[T] {
 }
 
 // Append appends data to the end of ComputableSlice.
-func (s *ComputableSlice[T]) Append(data ...T) *ComputableSlice[T] {
-	s.slice.Append(data...)
+func (s *ComputableSlice[T]) Append(items ...T) *ComputableSlice[T] {
+	s.slice.Append(items...)
 	return s
 }
 
