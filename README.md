@@ -90,6 +90,38 @@ These methods do not return a pointer to the `Slice` type, hence they do not sup
 | `Min()`                       | [**ComputableSlice**] Min returns the minimum value in the ComputableSlice.           |
 | `Avg()`                       | [**ComputableSlice**] Avg returns the average of all elements in the ComputableSlice. |
 
+### Set API Documentation
+
+The `Set` type provides a convenient interface for common set operations.
+
+| Method                    | Description                                                                |
+|---------------------------|----------------------------------------------------------------------------|
+| Add(data ...T)            | adds data to Set.                                                          |
+| Clone()                   | Clone returns a copy of Set.                                               |
+| Filter(f func(T) bool)    | Filter filters Set by f.                                                   |
+| Clear()                   | Clear clears Set.                                                          |
+| Delete(data ...T)         | Delete deletes data from Set.                                              |
+| ForEach(f func(T))        | ForEach iterates Set by f.                                                 |
+| Map(f func(T) T)          | Map maps Set by f.                                                         |
+| Merge(other *Set[T])      | Merge merges Set to self with other.                                       |
+| Intersect(other *Set[T])  | Intersect return a new Set, which is the intersection of Set and other.    |
+| Union(others ...*Set[T])  | Union returns a new Set which is the union set of `set` and `others`.      |
+| IsSubsetOf(other *Set[T]) | IsSubsetOf checks if Set is a subset of other.                             |
+| Diff(other *Set[T])       | Diff returns a new Set which is the difference set from `set` to `others`. |
+
+#### Set Non-Chain Methods
+
+These methods do not return a pointer to the `Set` type, hence they do not support method chaining.
+
+| Method                      | Description                                                         |
+|-----------------------------|---------------------------------------------------------------------|
+| `Slice() []T`               | Returns a copy of the set as a standard Go slice.                   |
+| `Size() int`                | Returns the length of the set.                                      |
+| `Has(item T) bool`          | Checks if the set contains a specific item and returns a boolean.   |
+| `Equal(other *Set[T]) bool` | Compares the set with another set and returns a boolean.            |
+| `Join(sep string) string`   | Joins the set elements into a string using the specified separator. |
+| `IsEmpty() bool`            | Checks if the set is empty and returns a boolean.                   |
+
 ## License
 
 MIT License.
