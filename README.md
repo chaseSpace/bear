@@ -53,8 +53,6 @@ func main() {
 
 ```
 
-For now, only support slice operations.
-
 ### Slice API Documentation
 
 TheSlicetype provides a convenient interface for common slice operations.
