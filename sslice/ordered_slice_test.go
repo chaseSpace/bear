@@ -80,7 +80,7 @@ func TestSort_OrderedSlice_Byte(t *testing.T) {
 func TestFilter_OrderedSlice_ReturnsFilteredSlice(t *testing.T) {
 	os := NewOrderedSlice([]int{1, 2, 3, 4, 5}...)
 	filtered := os.Filter(func(x int) bool { return x > 2 })
-	if !reflect.DeepEqual(filtered.slice.data, []int{3, 4, 5}) {
-		t.Errorf("Filter(func(x int) bool { return x > 2 }) = %v, want %v", filtered.slice.data, []int{3, 4, 5})
+	if expected := []int{1, 2}; !reflect.DeepEqual(filtered.slice.data, expected) {
+		t.Errorf("Filter(func(x int) bool { return x > 2 }) = %v, want %v", filtered.slice.data, expected)
 	}
 }
