@@ -31,7 +31,7 @@ func (s *Slice[T]) Clone() *Slice[T] {
 	return &Slice[T]{data: copied}
 }
 
-// Filter filters the slice. It will remove elements that match f function from underlying slice.
+// Filter filters the slice. It removes elements that match f function from underlying slice.
 // Then returns the Slice itself.
 func (s *Slice[T]) Filter(f func(T) bool) *Slice[T] {
 	for i := 0; i < len(s.data); {

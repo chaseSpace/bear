@@ -55,13 +55,13 @@ func main() {
 
 ### Slice API Documentation
 
-TheSlicetype provides a convenient interface for common slice operations.
+The Slice type provides a convenient interface for common slice operations.
 
 | Method     | Description                                                                                               |
 |------------|-----------------------------------------------------------------------------------------------------------|
 | Append()   | Appends new elements to the slice and returns the updated slice.                                          |
 | Clone()    | Returns a new slice that is a copy of the original slice.                                                 |
-| Filter()   | Filters the slice based on the provided predicate function and returns the slice.                         |
+| Filter()   | Filter removes elements that match f function from underlying slice.                                      |
 | Map()      | Applies a function to each element of the slice and returns the mapped slice.                             |
 | Unique()   | Removes duplicate items from the slice and returns the slice.                                             |
 | Reverse()  | Reverses the order of elements in the slice and returns the slice.                                        |
@@ -91,13 +91,13 @@ These methods do not return a pointer to theSlicetype, hence they do not support
 
 ### Set API Documentation
 
-TheSettype provides a convenient interface for common set operations.
+The Set type provides a convenient interface for common set operations.
 
 | Method       | Description                                                             |
 |--------------|-------------------------------------------------------------------------|
 | Add()        | adds data to Set.                                                       |
 | Clone()      | Clone returns a copy of Set.                                            |
-| Filter()     | Filter filters Set by f.                                                |
+| Filter()     | Filter removes elements that match f function from underlying slice.    |
 | Clear()      | Clear clears Set.                                                       |
 | Delete()     | Delete deletes data from Set.                                           |
 | ForEach()    | ForEach iterates Set by f.                                              |
