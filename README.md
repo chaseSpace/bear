@@ -5,7 +5,8 @@
 
 bear, focusing on **Data Structure Processing** (Using Generic) in golang.
 
-**NOTE**: All APIs is **not** concurrency-safe. We're doing less work like most of stdlib APIs, so you also should use
+**NOTE**: All APIs are **not** concurrency-safe. We're doing less work like most of the stdlib APIs, so you also should
+use
 it like
 use stdlib APIs.
 
@@ -53,7 +54,7 @@ func main() {
 
 ```
 
-### Slice API Documentation
+### 1. Slice API Documentation
 
 The Slice type provides a convenient interface for common slice operations.
 
@@ -89,7 +90,7 @@ These methods do not return a pointer to theSlicetype, hence they do not support
 | Avg()      | [**ComputableSlice**] Avg returns the average of all elements in the ComputableSlice. |
 | IsEmpty()  | Checks if the underlying slice is empty.                                              |
 
-### Set API Documentation
+### 2. Set API Documentation
 
 The Set type provides a convenient interface for common set operations.
 
@@ -110,7 +111,7 @@ The Set type provides a convenient interface for common set operations.
 
 #### Set Non-Chain Methods
 
-These methods do not return a pointer to theSettype, hence they do not support method chaining.
+These methods do not return a pointer to the Set type, hence they do not support method chaining.
 
 | Method    | Description                                                         |
 |-----------|---------------------------------------------------------------------|
@@ -120,6 +121,28 @@ These methods do not return a pointer to theSettype, hence they do not support m
 | Equal()   | Compares the set with another set and returns a boolean.            |
 | Join()    | Joins the set elements into a string using the specified separator. |
 | IsEmpty() | Checks if the set is empty and returns a boolean.                   |
+
+### 3. SinglyLinkedList API Documentation
+
+The SinglyLinkedList type provides a convenient interface for common **singly** linked list operations.
+
+| Method     | Description                                                                          |
+|------------|--------------------------------------------------------------------------------------|
+| `Append`   | adds one or more values to the end of the linked list.                               |
+| `InsertAt` | inserts a new node at the specified index.                                           |
+| `Remove`   | removes the node at the specified index.                                             |
+| `IndexOf`  | returns the index of the first occurrence of the specified value in the linked list. |
+| `Find`     | returns the node at the specified index.                                             |
+| `Update`   | updates the value of the node at the specified index.                                |
+| `Walk`     | applies a function to each node in the linked list.                                  |
+| `Reverse`  | reverses the linked list.                                                            |
+| `Merge`    | merges the current linked list with another linked list.                             |
+| `ToSlice`  | converts all elements from the linked list to a slice.                               |
+| `Length`   | returns the length of the linked list.                                               |
+| `IsEmpty`  | checks if the linked list is empty.                                                  |
+
+> [!NOTE]
+> This type does not support method chaining.
 
 ## License
 
