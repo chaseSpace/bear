@@ -8,6 +8,34 @@ import (
 
 //go test slinkedlist/* -v
 
+func printAllElements(list *SinglyLinkedList[int]) {
+	println("printAllElements --START")
+	head := list.head
+	i := 0
+	for head != nil {
+		println(i, head.val)
+		head = head.next
+		i++
+	}
+	if list.tail == nil {
+		println("tail is nil")
+	} else {
+		println("tail.val:", list.tail.val)
+	}
+	println("printAllElements --END")
+}
+
+func setTail(list *SinglyLinkedList[int]) {
+	if list.tail != nil {
+		return
+	}
+	for n := list.head; n != nil; n = n.next {
+		if n.next == nil {
+			list.tail = n
+		}
+	}
+}
+
 // TestAppend 测试 Append 方法的各种情况
 func TestAppend(t *testing.T) {
 	tests := []struct {
@@ -26,77 +54,162 @@ func TestAppend(t *testing.T) {
 			name:     "single value",
 			list:     &SinglyLinkedList[int]{},
 			val:      []int{1},
-			expected: &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: nil}},
+			expected: &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: nil}, tail: &SinglyNode[int]{val: 1, next: nil}},
 		},
 		{
-			name:     "multiple values",
-			list:     &SinglyLinkedList[int]{},
-			val:      []int{1, 2, 3},
-			expected: &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: &SinglyNode[int]{Val: 2, Next: &SinglyNode[int]{Val: 3, Next: nil}}}},
+			name: "multiple values",
+			list: &SinglyLinkedList[int]{},
+			val:  []int{1, 2, 3},
+			expected: &SinglyLinkedList[int]{
+				head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2, next: &SinglyNode[int]{val: 3, next: nil}}},
+				tail: &SinglyNode[int]{val: 3, next: nil}},
 		},
 		{
-			name:     "non-empty list",
-			list:     &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: nil}},
-			val:      []int{2, 3},
-			expected: &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: &SinglyNode[int]{Val: 2, Next: &SinglyNode[int]{Val: 3, Next: nil}}}},
+			name: "non-empty list",
+			list: &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: nil}},
+			val:  []int{2, 3},
+			expected: &SinglyLinkedList[int]{
+				head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2, next: &SinglyNode[int]{val: 3, next: nil}}},
+				tail: &SinglyNode[int]{val: 3, next: nil}},
 		},
 		{
-			name:     "multi-nodes list",
-			list:     &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: &SinglyNode[int]{Val: 2}}},
-			val:      []int{3, 4},
-			expected: &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: &SinglyNode[int]{Val: 2, Next: &SinglyNode[int]{Val: 3, Next: &SinglyNode[int]{Val: 4, Next: nil}}}}},
+			name: "multi-nodes list",
+			list: &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2}}},
+			val:  []int{3, 4},
+			expected: &SinglyLinkedList[int]{
+				head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2, next: &SinglyNode[int]{val: 3, next: &SinglyNode[int]{val: 4, next: nil}}}},
+				tail: &SinglyNode[int]{val: 4, next: nil},
+			},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			setTail(tt.list)
 			tt.list.Append(tt.val...)
 			if !reflect.DeepEqual(tt.list, tt.expected) {
-				t.Errorf("Append() = %v, want %v", tt.list, tt.expected)
+				printAllElements(tt.list)
+				t.Errorf("Append() = %+v, want %+v", tt.list, tt.expected)
 			}
 		})
 	}
 }
 
-// TestInsertAt_NegativeIndex_ShouldReturnError tests the InsertAt method with a negative index.
-func TestInsertAt_NegativeIndex_ShouldReturnError(t *testing.T) {
-	list := NewSinglyLinkedList[int]()
-	err := list.InsertAt(-1, 10)
-	assert.Error(t, err, "index must be zero or a positive number")
+func TestInsertBefore(t *testing.T) {
+	tests := []struct {
+		name       string
+		list       *SinglyLinkedList[int]
+		ShouldFail bool
+		index      int
+		val        int
+		expected   []int
+	}{
+		{
+			name:     "insert before head",
+			list:     &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 2, next: &SinglyNode[int]{val: 3, next: nil}}},
+			index:    0,
+			val:      1,
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:     "insert before tail",
+			list:     &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 3, next: nil}}},
+			index:    1,
+			val:      2,
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:       "insert before head on empty list",
+			ShouldFail: true,
+			list:       &SinglyLinkedList[int]{},
+			index:      0,
+			val:        1,
+		},
+		{
+			name:       "insert before tail+1",
+			ShouldFail: true,
+			list:       &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: nil}},
+			index:      1,
+		},
+		{
+			name:       "insert after negative index",
+			ShouldFail: true,
+			list:       &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: nil}},
+			index:      -1,
+			val:        3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.list.InsertBefore(tt.index, tt.val)
+			if tt.ShouldFail {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.expected, tt.list.ToSlice(), "InsertBefore() did not insert the value at the correct index")
+			}
+		})
+	}
 }
 
-// TestInsertAt_ZeroIndex_ShouldInsertAtHead tests the InsertAt method with index zero.
-func TestInsertAt_ZeroIndex_ShouldInsertAtHead(t *testing.T) {
-	list := NewSinglyLinkedList[int]()
-	list.InsertAt(0, 10)
-	list.InsertAt(0, 20)
-	assert.Equal(t, 20, list.Head.Val)
-}
+func TestInsertAfter(t *testing.T) {
+	tests := []struct {
+		name       string
+		list       *SinglyLinkedList[int]
+		ShouldFail bool
+		index      int
+		val        int
+		expected   []int
+	}{
+		{
+			name:     "insert after head",
+			list:     &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
+			index:    0,
+			val:      2,
+			expected: []int{1, 2},
+		},
+		{
+			name:     "insert after tail",
+			list:     &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2, next: nil}}},
+			index:    1,
+			val:      3,
+			expected: []int{1, 2, 3},
+		},
+		{
+			name:       "insert after head on empty list",
+			ShouldFail: true,
+			list:       &SinglyLinkedList[int]{},
+			index:      0,
+			val:        1,
+		},
+		{
+			name:       "insert after negative index",
+			ShouldFail: true,
+			list:       &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: nil}},
+			index:      -1,
+			val:        3,
+		},
+	}
 
-// TestInsertAt_ValidIndex_ShouldInsertAtCorrectPosition tests the InsertAt method with a valid index.
-func TestInsertAt_ValidIndex_ShouldInsertAtCorrectPosition(t *testing.T) {
-	list := NewSinglyLinkedList[int]()
-	list.InsertAt(0, 10)
-	list.InsertAt(1, 20)
-	list.InsertAt(1, 30)
-	assert.Equal(t, 10, list.Head.Val)
-	assert.Equal(t, 30, list.Head.Next.Val)
-	assert.Equal(t, 20, list.Head.Next.Next.Val)
-}
-
-// TestInsertAt_OutOfRangeIndex_ShouldReturnError tests the InsertAt method with an out-of-range index.
-func TestInsertAt_OutOfRangeIndex_ShouldReturnError(t *testing.T) {
-	list := NewSinglyLinkedList[int]()
-	list.InsertAt(0, 10)
-	err := list.InsertAt(2, 20)
-	assert.Error(t, err, "index out of range")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.list.InsertAfter(tt.index, tt.val)
+			if tt.ShouldFail {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+				assert.Equal(t, tt.expected, tt.list.ToSlice(), "InsertBefore() did not insert the value at the correct index")
+			}
+		})
+	}
 }
 
 // TestRemove_EmptyList_NoError
 func TestRemove_EmptyList_NoError(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Remove(0)
-	if list.Head != nil {
+	if list.head != nil {
 		t.Errorf("Expected list to remain empty after Remove on an empty list")
 	}
 }
@@ -106,7 +219,7 @@ func TestRemove_NegativeIndex_NoRemoval(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Append(1)
 	list.Remove(-1)
-	if list.Head.Val != 1 {
+	if list.head.val != 1 {
 		t.Errorf("Expected no removal for negative index")
 	}
 }
@@ -117,7 +230,7 @@ func TestRemove_RemoveHeadNode_HeadUpdated(t *testing.T) {
 	list.Append(1)
 	list.Append(2)
 	list.Remove(0)
-	if list.Head.Val != 2 {
+	if list.head.val != 2 {
 		t.Errorf("Expected head to be updated to the next node after removing head")
 	}
 }
@@ -129,7 +242,7 @@ func TestRemove_RemoveMiddleNode_NodeRemoved(t *testing.T) {
 	list.Append(2)
 	list.Append(3)
 	list.Remove(1)
-	if list.Head.Next.Val != 3 {
+	if list.head.next.val != 3 {
 		t.Errorf("Expected middle node to be removed")
 	}
 }
@@ -140,7 +253,7 @@ func TestRemove_RemoveTailNode_TailUpdated(t *testing.T) {
 	list.Append(1)
 	list.Append(2)
 	list.Remove(1)
-	if list.Head.Next != nil {
+	if list.head.next != nil {
 		t.Errorf("Expected tail to be updated after removing tail node")
 	}
 }
@@ -150,7 +263,7 @@ func TestRemove_OutOfRangeIndex_NoRemoval(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Append(1)
 	list.Remove(10)
-	if list.Head.Val != 1 {
+	if list.head.val != 1 {
 		t.Errorf("Expected no removal for out of range index")
 	}
 }
@@ -223,7 +336,7 @@ func TestFind_ValidIndex_ReturnsNode(t *testing.T) {
 
 	node := list.Find(1)
 	assert.NotNil(t, node, "Expected non-nil node")
-	assert.Equal(t, 20, node.Val, "Expected value at index 1 to be 20")
+	assert.Equal(t, 20, node.val, "Expected value at index 1 to be 20")
 }
 
 // TestFind_IndexOutOfRange_ReturnsNil tests the Find method with an out-of-range index.
@@ -254,7 +367,7 @@ func TestFind_ZeroIndex_ReturnsHead(t *testing.T) {
 
 	node := list.Find(0)
 	assert.NotNil(t, node, "Expected non-nil node")
-	assert.Equal(t, 10, node.Val, "Expected value at index 0 to be 10")
+	assert.Equal(t, 10, node.val, "Expected value at index 0 to be 10")
 }
 
 // TestUpdate_ValidIndex_NodeUpdated tests the Update method when the index is valid.
@@ -333,7 +446,7 @@ func TestWalk_ModifyNodeValues_DuringWalk(t *testing.T) {
 	list.Append(3)
 	list.Walk(func(val int) {
 		if val == 2 {
-			list.Head.Next.Val = 10 // Modify the second node's value
+			list.head.next.val = 10 // Modify the second node's value
 		}
 	})
 	var result []int
@@ -350,7 +463,7 @@ func TestWalk_ModifyNodeValues_DuringWalk(t *testing.T) {
 func TestReverse_EmptyList_ShouldRemainUnchanged(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Reverse()
-	if list.Head != nil {
+	if list.head != nil {
 		t.Errorf("Expected list to remain empty after reverse, got: %v", list)
 	}
 }
@@ -360,7 +473,7 @@ func TestReverse_SingleNode_ShouldRemainUnchanged(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Append(1)
 	list.Reverse()
-	if list.Head.Val != 1 || list.Head.Next != nil {
+	if list.head.val != 1 || list.head.next != nil {
 		t.Errorf("Expected single-node list to remain unchanged after reverse, got: %v", list)
 	}
 }
@@ -404,28 +517,28 @@ func TestMerge(t *testing.T) {
 		expected []int
 	}{
 		{
-			list1:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1, Next: &SinglyNode[int]{Val: 2}}},
-			list2:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 3, Next: &SinglyNode[int]{Val: 4}}},
+			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2}}},
+			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 3, next: &SinglyNode[int]{val: 4}}},
 			expected: []int{1, 2, 3, 4},
 		},
 		{
-			list1:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1}},
-			list2:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 2}},
+			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
+			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 2}},
 			expected: []int{1, 2},
 		},
 		{
-			list1:    &SinglyLinkedList[int]{Head: nil},
-			list2:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1}},
+			list1:    &SinglyLinkedList[int]{head: nil},
+			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
 			expected: []int{1},
 		},
 		{
-			list1:    &SinglyLinkedList[int]{Head: &SinglyNode[int]{Val: 1}},
-			list2:    &SinglyLinkedList[int]{Head: nil},
+			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
+			list2:    &SinglyLinkedList[int]{head: nil},
 			expected: []int{1},
 		},
 		{
-			list1:    &SinglyLinkedList[int]{Head: nil},
-			list2:    &SinglyLinkedList[int]{Head: nil},
+			list1:    &SinglyLinkedList[int]{head: nil},
+			list2:    &SinglyLinkedList[int]{head: nil},
 			expected: []int{},
 		},
 	}
@@ -433,10 +546,10 @@ func TestMerge(t *testing.T) {
 	for i, test := range tests {
 		test.list1.Merge(test.list2)
 		var actual = []int{}
-		current := test.list1.Head
+		current := test.list1.head
 		for current != nil {
-			actual = append(actual, current.Val)
-			current = current.Next
+			actual = append(actual, current.val)
+			current = current.next
 		}
 		assert.Equal(t, test.expected, actual, "Merge method should merge two lists correctly, No.%d", i)
 	}

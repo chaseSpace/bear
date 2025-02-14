@@ -126,20 +126,21 @@ These methods do not return a pointer to the Set type, hence they do not support
 
 The SinglyLinkedList type provides a convenient interface for common **singly** linked list operations.
 
-| Method     | Description                                                                          |
-|------------|--------------------------------------------------------------------------------------|
-| `Append`   | Adds one or more values to the end of the linked list.                               |
-| `InsertAt` | Inserts a new node at the specified index.                                           |
-| `Remove`   | Removes the node at the specified index.                                             |
-| `IndexOf`  | Returns the index of the first occurrence of the specified value in the linked list. |
-| `Find`     | Returns the node at the specified index.                                             |
-| `Update`   | Updates the value of the node at the specified index.                                |
-| `Walk`     | Applies a function to each node in the linked list.                                  |
-| `Reverse`  | Reverses the linked list.                                                            |
-| `Merge`    | Merges the current linked list with another linked list.                             |
-| `ToSlice`  | Converts all elements from the linked list to a slice.                               |
-| `Length`   | Returns the length of the linked list.                                               |
-| `IsEmpty`  | Checks if the linked list is empty.                                                  |
+| Method         | Description                                                                          |
+|----------------|--------------------------------------------------------------------------------------|
+| `Append`       | Adds one or more values to the end of the linked list.                               |
+| `InsertBefore` | Inserts a new node with the specified value before the node at the specified index.  |
+| `InsertAfter`  | Inserts a new node with the specified value after the node at the specified index.   |
+| `Remove`       | Removes the node at the specified index.                                             |
+| `IndexOf`      | Returns the index of the first occurrence of the specified value in the linked list. |
+| `Find`         | Returns the node at the specified index.                                             |
+| `Update`       | Updates the value of the node at the specified index.                                |
+| `Walk`         | Applies a function to each node in the linked list.                                  |
+| `Reverse`      | Reverses the linked list.                                                            |
+| `Merge`        | Merges the current linked list with another linked list.                             |
+| `ToSlice`      | Converts all elements from the linked list to a slice.                               |
+| `Length`       | Returns the length of the linked list.                                               |
+| `IsEmpty`      | Checks if the linked list is empty.                                                  |
 
 > [!NOTE]
 > This type does not support method chaining.
