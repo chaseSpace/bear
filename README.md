@@ -140,7 +140,7 @@ The SinglyLinkedList type provides a convenient interface for common **singly** 
 | `Length`       | Returns the length of the linked list.                                               |
 | `IsEmpty`      | Checks if the linked list is empty.                                                  |
 | `String`       | Returns a string representation of the linked list.                                  |
-| `Count`        | Count occurrences of a specific value in the linked list.                            |
+| `CountOf`      | Count occurrences of a specific value in the linked list.                            |
 
 > [!NOTE]
 > This type does not support method chaining.
@@ -165,7 +165,7 @@ The DoublyLinkedList type provides a convenient interface for common **doubly** 
 | `Length`       | Returns the length of the linked list.                                               |
 | `IsEmpty`      | Checks if the linked list is empty.                                                  |
 | `String`       | Returns a string representation of the linked list.                                  |
-| `Count`        | Count occurrences of a specific value in the linked list.                            |
+| `CountOf`      | Count occurrences of a specific value in the linked list.                            |
 
 > [!NOTE]
 > This type does not support method chaining.
