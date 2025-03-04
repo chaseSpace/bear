@@ -6,9 +6,7 @@
 bear, focusing on **Data Structure Processing** (Using Generic) in golang.
 
 **NOTE**: All APIs are **not** concurrency-safe. We're doing less work like most of the stdlib APIs, so you also should
-use
-it like
-use stdlib APIs.
+use it like use stdlib APIs.
 
 Min Go version: 1.18
 
@@ -141,6 +139,33 @@ The SinglyLinkedList type provides a convenient interface for common **singly** 
 | `ToSlice`      | Converts all elements from the linked list to a slice.                               |
 | `Length`       | Returns the length of the linked list.                                               |
 | `IsEmpty`      | Checks if the linked list is empty.                                                  |
+| `String`       | Returns a string representation of the linked list.                                  |
+| `Count`        | Count occurrences of a specific value in the linked list.                            |
+
+> [!NOTE]
+> This type does not support method chaining.
+
+### 4. DoublyLinkedList API Documentation
+
+The DoublyLinkedList type provides a convenient interface for common **doubly** linked list operations.
+
+| Method         | Description                                                                          |
+|----------------|--------------------------------------------------------------------------------------|
+| `Append`       | Adds one or more values to the end of the linked list.                               |
+| `InsertBefore` | Inserts a new node with the specified value before the node at the specified index.  |
+| `InsertAfter`  | Inserts a new node with the specified value after the node at the specified index.   |
+| `Remove`       | Removes the node at the specified index.                                             |
+| `IndexOf`      | Returns the index of the first occurrence of the specified value in the linked list. |
+| `Find`         | Returns the node at the specified index.                                             |
+| `Update`       | Updates the value of the node at the specified index.                                |
+| `Walk`         | Applies a function to each node in the linked list.                                  |
+| `Reverse`      | Reverses the linked list.                                                            |
+| `Merge`        | Merges the current linked list with another linked list.                             |
+| `ToSlice`      | Converts all elements from the linked list to a slice.                               |
+| `Length`       | Returns the length of the linked list.                                               |
+| `IsEmpty`      | Checks if the linked list is empty.                                                  |
+| `String`       | Returns a string representation of the linked list.                                  |
+| `Count`        | Count occurrences of a specific value in the linked list.                            |
 
 > [!NOTE]
 > This type does not support method chaining.

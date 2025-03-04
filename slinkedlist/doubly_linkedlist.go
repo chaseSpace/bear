@@ -5,50 +5,54 @@ import (
 	"github.com/chaseSpace/bear/butil"
 )
 
-type SinglyNode[T comparable] struct {
+type DoublyNode[T comparable] struct {
 	val  T
-	next *SinglyNode[T]
+	prev *DoublyNode[T]
+	next *DoublyNode[T]
 }
 
-type SinglyLinkedList[T comparable] struct {
-	head, tail *SinglyNode[T]
+type DoublyLinkedList[T comparable] struct {
+	head *DoublyNode[T]
+	tail *DoublyNode[T]
 }
 
-// NewSinglyLinkedList creates a new singly linked list.
-func NewSinglyLinkedList[T comparable]() *SinglyLinkedList[T] {
-	return &SinglyLinkedList[T]{}
+// NewDoublyLinkedList creates a new doubly linked list.
+func NewDoublyLinkedList[T comparable]() *DoublyLinkedList[T] {
+	return &DoublyLinkedList[T]{}
 }
 
 // Append adds one or more values to the end of the linked list.
-func (list *SinglyLinkedList[T]) Append(val ...T) {
+func (list *DoublyLinkedList[T]) Append(val ...T) {
 	if len(val) == 0 {
 		return
 	}
-	newNode := &SinglyNode[T]{val: val[0], next: nil}
-	first := newNode
+	curr := &DoublyNode[T]{val: val[0], prev: nil, next: nil}
+	first := curr
 	for i := 1; i < len(val); i++ {
-		newNode.next = &SinglyNode[T]{val: val[i], next: nil}
-		newNode = newNode.next
+		curr.next = &DoublyNode[T]{val: val[i], prev: curr, next: nil}
+		curr = curr.next
 	}
-
 	if list.head == nil { // empty list
 		list.head = first
-		list.tail = newNode
+		list.tail = curr
 		return
 	}
+	// replace curr with curr
+	first.prev = list.tail
 	list.tail.next = first
-	list.tail = newNode
+	list.tail = curr
+	return
 }
 
 // InsertBefore inserts a new node with the specified value before the node at the specified index.
-func (list *SinglyLinkedList[T]) InsertBefore(index int, val T) error {
+func (list *DoublyLinkedList[T]) InsertBefore(index int, val T) error {
 	if index < 0 {
 		return fmt.Errorf("index must be zero or a positive number")
 	}
 	if list.head == nil { // operation on the empty list is prohibited
 		return fmt.Errorf("index out of range")
 	}
-	newNode := &SinglyNode[T]{val: val, next: nil}
+	newNode := &DoublyNode[T]{val: val, next: nil}
 	if index == 0 { // insert before head
 		newNode.next = list.head
 		list.head = newNode
@@ -67,22 +71,23 @@ func (list *SinglyLinkedList[T]) InsertBefore(index int, val T) error {
 	if current.next == nil { // index = length(point to tail)
 		return fmt.Errorf("index out of range")
 	}
-	// do connect current -> newNode
+	// do connect current <-> newNode
+	newNode.prev = current
 	newNode.next = current.next
 	current.next = newNode
-	// because insertion into the tail is not allowed here, there is no need to change the tail node
+	// because insertion into(replace) the tail is not allowed here, there is no need to change the tail node
 	return nil
 }
 
 // InsertAfter inserts a new node with the specified value after the node at the specified index.
-func (list *SinglyLinkedList[T]) InsertAfter(index int, val T) error {
+func (list *DoublyLinkedList[T]) InsertAfter(index int, val T) error {
 	if index < 0 {
 		return fmt.Errorf("index must be zero or a positive number")
 	}
 	if list.head == nil { // operation on the empty list is prohibited
 		return fmt.Errorf("index out of range")
 	}
-	newNode := &SinglyNode[T]{val: val, next: nil}
+	newNode := &DoublyNode[T]{val: val, next: nil}
 
 	current := list.head
 	// find the node points to index
@@ -92,37 +97,54 @@ func (list *SinglyLinkedList[T]) InsertAfter(index int, val T) error {
 			return fmt.Errorf("index out of range")
 		}
 	}
-	// do insert operation
+	// insertion after the tail node is possible
+	if current.next == nil {
+		list.tail = newNode
+	}
+	// do connect current <-> newNode
+	newNode.prev = current
 	newNode.next = current.next
 	current.next = newNode
 	return nil
 }
 
 // Remove removes the node at the specified index.
-func (list *SinglyLinkedList[T]) Remove(index int) {
+func (list *DoublyLinkedList[T]) Remove(index int) {
 	if list.head == nil || index < 0 {
 		return
 	}
 
 	if index == 0 {
 		list.head = list.head.next
+		if list.head != nil {
+			list.head.prev = nil
+		} else {
+			list.tail = nil
+		}
 		return
 	}
-
+	// find one this is before the node points to index
 	current := list.head
 	for i := 1; current != nil && i < index; i++ {
 		current = current.next
 	}
 
+	// if current is nil or current.next is nil, the index is out of range
 	if current == nil || current.next == nil {
 		return
 	}
 
+	// remove the node at index
 	current.next = current.next.next
+	if current.next != nil {
+		current.next.prev = current
+	} else {
+		list.tail = current
+	}
 }
 
 // IndexOf returns the index of the first occurrence of the specified value in the linked list.
-func (list *SinglyLinkedList[T]) IndexOf(val T) int {
+func (list *DoublyLinkedList[T]) IndexOf(val T) int {
 	current := list.head
 	for i := 0; current != nil; i++ {
 		if current.val == val {
@@ -134,7 +156,7 @@ func (list *SinglyLinkedList[T]) IndexOf(val T) int {
 }
 
 // Find returns the node at the specified index.
-func (list *SinglyLinkedList[T]) Find(index int) *SinglyNode[T] {
+func (list *DoublyLinkedList[T]) Find(index int) *DoublyNode[T] {
 	current := list.head
 	for i := 0; current != nil; i++ {
 		if i == index {
@@ -146,7 +168,7 @@ func (list *SinglyLinkedList[T]) Find(index int) *SinglyNode[T] {
 }
 
 // Update updates the value of the node at the specified index.
-func (list *SinglyLinkedList[T]) Update(index int, newVal T) error {
+func (list *DoublyLinkedList[T]) Update(index int, newVal T) error {
 	node := list.Find(index)
 	if node != nil {
 		node.val = newVal
@@ -157,7 +179,15 @@ func (list *SinglyLinkedList[T]) Update(index int, newVal T) error {
 }
 
 // Walk applies a function to each node in the linked list.
-func (list *SinglyLinkedList[T]) Walk(f func(T)) {
+func (list *DoublyLinkedList[T]) Walk(f func(T), reverse ...bool) {
+	if len(reverse) > 0 && reverse[0] {
+		current := list.tail
+		for current != nil {
+			f(current.val)
+			current = current.prev
+		}
+		return
+	}
 	current := list.head
 	for current != nil {
 		f(current.val)
@@ -166,26 +196,31 @@ func (list *SinglyLinkedList[T]) Walk(f func(T)) {
 }
 
 // Reverse reverses the linked list.
-func (list *SinglyLinkedList[T]) Reverse() {
+func (list *DoublyLinkedList[T]) Reverse() {
 	if list.head == nil || list.head.next == nil {
 		return
 	}
-	var prev *SinglyNode[T]
-	var current = list.head
-	var next *SinglyNode[T]
+	var curr, prev, next *DoublyNode[T]
+	for curr = list.head; ; {
+		// remember prev/next
+		prev = curr.prev
+		next = curr.next
 
-	for current != nil {
-		next = current.next
-		current.next = prev
-		prev = current
-		current = next
+		// switch next and prev
+		curr.prev = next
+		curr.next = prev
+
+		if next == nil {
+			break
+		}
+		curr = next
 	}
-
-	list.head = prev
+	list.tail = list.head
+	list.head = curr
 }
 
 // Merge merges the current linked list with another linked list.
-func (list *SinglyLinkedList[T]) Merge(other *SinglyLinkedList[T]) {
+func (list *DoublyLinkedList[T]) Merge(other *DoublyLinkedList[T]) {
 	if other == nil || other.head == nil {
 		return
 	}
@@ -194,14 +229,15 @@ func (list *SinglyLinkedList[T]) Merge(other *SinglyLinkedList[T]) {
 		list.tail = other.tail
 		return
 	}
-
 	// connect 1.tail -> 2.head
 	list.tail.next = other.head
+	other.head.prev = list.tail
+
 	list.tail = other.tail
 }
 
 // ToSlice converts the linked list to a slice.
-func (list *SinglyLinkedList[T]) ToSlice() []T {
+func (list *DoublyLinkedList[T]) ToSlice() []T {
 	var arr []T
 	current := list.head
 	for current != nil {
@@ -212,7 +248,7 @@ func (list *SinglyLinkedList[T]) ToSlice() []T {
 }
 
 // Length returns the length of the linked list.
-func (list *SinglyLinkedList[T]) Length() int {
+func (list *DoublyLinkedList[T]) Length() int {
 	length := 0
 	current := list.head
 	for current != nil {
@@ -223,26 +259,27 @@ func (list *SinglyLinkedList[T]) Length() int {
 }
 
 // IsEmpty checks if the linked list is empty.
-func (list *SinglyLinkedList[T]) IsEmpty() bool {
+func (list *DoublyLinkedList[T]) IsEmpty() bool {
 	return list.head == nil
 }
 
 // String returns a string representation of the linked list.
-func (list *SinglyLinkedList[T]) String() string {
+// For each node, the string representation includes the type and value of the node.
+func (list *DoublyLinkedList[T]) String() string {
 	var result string
 	current := list.head
 	for current != nil {
-		result += fmt.Sprintf("%v", butil.PrintReadableTypeValue(current.val))
+		result += fmt.Sprintf("%s", butil.PrintReadableTypeValue(current.val))
 		if current.next != nil {
-			result += " -> "
+			result += " <-> "
 		}
 		current = current.next
 	}
 	return result
 }
 
-// CountOf counts occurrences of a specific value in the linked list.
-func (list *SinglyLinkedList[T]) CountOf(val T) int {
+// CountOf returns the count occurrences of a specific value in the linked list.
+func (list *DoublyLinkedList[T]) CountOf(val T) int {
 	var count int
 	current := list.head
 	for current != nil {
