@@ -1,6 +1,7 @@
 package slinkedlist
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -370,37 +371,37 @@ func TestFind_ZeroIndex_ReturnsHead(t *testing.T) {
 	assert.Equal(t, 10, node.val, "Expected value at index 0 to be 10")
 }
 
-// TestUpdate_ValidIndex_NodeUpdated tests the Update method when the index is valid.
-func TestUpdate_ValidIndex_NodeUpdated(t *testing.T) {
+// TestUpdate_NodeExists_ValueUpdated
+func TestUpdate_NodeExists_ValueUpdated(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Append(10)
 	list.Append(20)
 	list.Append(30)
 
-	list.Update(1, 25) // Update the second node's value to 25
+	err := list.Update(1, 25)
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
 
-	expected := []int{10, 25, 30}
-	actual := list.ToSlice()
-
-	if !assert.Equal(t, expected, actual) {
-		t.Errorf("Expected %v, got %v", expected, actual)
+	if list.head.next.val != 25 {
+		t.Errorf("Expected value at index 1 to be 25, got %v", list.head.next.val)
 	}
 }
 
-// TestUpdate_InvalidIndex_NoUpdate tests the Update method when the index is invalid.
-func TestUpdate_InvalidIndex_NoUpdate(t *testing.T) {
+// TestUpdate_NodeDoesNotExist_ReturnsError
+func TestUpdate_NodeDoesNotExist_ReturnsError(t *testing.T) {
 	list := NewSinglyLinkedList[int]()
 	list.Append(10)
 	list.Append(20)
-	list.Append(30)
 
-	list.Update(5, 100) // Attempt to update a non-existent node
-
-	expected := []int{10, 20, 30}
-	actual := list.ToSlice()
-
-	if !assert.Equal(t, expected, actual) {
-		t.Errorf("Expected %v, got %v", expected, actual)
+	err := list.Update(2, 30)
+	if err == nil {
+		t.Errorf("Expected an error, got nil")
+	} else {
+		expectedError := fmt.Errorf("index out of range")
+		if err.Error() != expectedError.Error() {
+			t.Errorf("Expected error %v, got %v", expectedError, err)
+		}
 	}
 }
 
@@ -509,50 +510,48 @@ func TestReverse_ReversingTwice_ShouldRestoreOriginalOrder(t *testing.T) {
 	}
 }
 
-// TestMerge tests the Merge method of SinglyLinkedList.
-func TestMerge(t *testing.T) {
-	tests := []struct {
-		list1    *SinglyLinkedList[int]
-		list2    *SinglyLinkedList[int]
-		expected []int
-	}{
-		{
-			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1, next: &SinglyNode[int]{val: 2}}},
-			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 3, next: &SinglyNode[int]{val: 4}}},
-			expected: []int{1, 2, 3, 4},
-		},
-		{
-			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
-			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 2}},
-			expected: []int{1, 2},
-		},
-		{
-			list1:    &SinglyLinkedList[int]{head: nil},
-			list2:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
-			expected: []int{1},
-		},
-		{
-			list1:    &SinglyLinkedList[int]{head: &SinglyNode[int]{val: 1}},
-			list2:    &SinglyLinkedList[int]{head: nil},
-			expected: []int{1},
-		},
-		{
-			list1:    &SinglyLinkedList[int]{head: nil},
-			list2:    &SinglyLinkedList[int]{head: nil},
-			expected: []int{},
-		},
-	}
+// TestMerge_EmptyOtherList_ListUnchanged
+func TestMerge_EmptyOtherList_ListUnchanged(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	list.Append(2)
+	other := NewSinglyLinkedList[int]()
 
-	for i, test := range tests {
-		test.list1.Merge(test.list2)
-		var actual = []int{}
-		current := test.list1.head
-		for current != nil {
-			actual = append(actual, current.val)
-			current = current.next
-		}
-		assert.Equal(t, test.expected, actual, "Merge method should merge two lists correctly, No.%d", i)
-	}
+	list.Merge(other)
+
+	assert.Equal(t, 2, list.Length())
+	assert.Equal(t, 1, list.head.val)
+	assert.Equal(t, 2, list.tail.val)
+}
+
+// TestMerge_EmptyList_ListSetToOther
+func TestMerge_EmptyList_ListSetToOther(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	other := NewSinglyLinkedList[int]()
+	other.Append(3)
+	other.Append(4)
+
+	list.Merge(other)
+
+	assert.Equal(t, 2, list.Length())
+	assert.Equal(t, 3, list.head.val)
+	assert.Equal(t, 4, list.tail.val)
+}
+
+// TestMerge_BothListsNotEmpty_ListMerged
+func TestMerge_BothListsNotEmpty_ListMerged(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	list.Append(2)
+	other := NewSinglyLinkedList[int]()
+	other.Append(3)
+	other.Append(4)
+
+	list.Merge(other)
+
+	assert.Equal(t, 4, list.Length())
+	assert.Equal(t, 1, list.head.val)
+	assert.Equal(t, 4, list.tail.val)
 }
 
 func TestSinglyLinkedList_Length(t *testing.T) {
@@ -597,4 +596,103 @@ func TestSinglyLinkedList_Length(t *testing.T) {
 			assert.Equal(t, tt.want, got, "Length() = %v, want %v", got, tt.want)
 		})
 	}
+}
+
+// TestString_EmptyList_ReturnsEmptyString tests the String method on an empty list.
+func TestString_EmptyList_ReturnsEmptyString(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	expected := ""
+	actual := list.String()
+	if actual != expected {
+		t.Errorf("Expected %q, got %q", expected, actual)
+	}
+}
+
+// TestString_SingleNode_ReturnsNodeValue tests the String method on a list with a single node.
+func TestString_SingleNode_ReturnsNodeValue(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	expected := "(int)(1)"
+	actual := list.String()
+	if actual != expected {
+		t.Errorf("Expected %q, got %q", expected, actual)
+	}
+}
+
+// TestString_MultipleNodes_ReturnsCorrectString tests the String method on a list with multiple nodes.
+func TestString_MultipleNodes_ReturnsCorrectString(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	list.Append(2)
+	list.Append(3)
+	expected := "(int)(1) -> (int)(2) -> (int)(3)"
+	actual := list.String()
+	if actual != expected {
+		t.Errorf("Expected %q, got %q", expected, actual)
+	}
+}
+
+func TestString_MultiLevelPointers_ReturnsCorrectString(t *testing.T) {
+	// 创建多层指针
+	var _1 = 1
+	var a = new(*int)
+	var b = new(*int)
+	*b = &_1
+
+	list := NewSinglyLinkedList[**int]()
+	list.Append(a)
+	list.Append(b)
+
+	expected := fmt.Sprintf("(**int)(nil) -> (**int)(1)")
+
+	assert.Equal(t, expected, list.String())
+}
+
+// TestCountOf_EmptyList_ShouldReturnZero tests the CountOf method on an empty list.
+func TestCountOf_EmptyList_ShouldReturnZero(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	assert.Equal(t, 0, list.CountOf(1))
+}
+
+// TestCountOf_SingleNodeMatchingValue_ShouldReturnOne tests the CountOf method with a single node matching the value.
+func TestCountOf_SingleNodeMatchingValue_ShouldReturnOne(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	assert.Equal(t, 1, list.CountOf(1))
+}
+
+// TestCountOf_SingleNodeNonMatchingValue_ShouldReturnZero tests the CountOf method with a single node not matching the value.
+func TestCountOf_SingleNodeNonMatchingValue_ShouldReturnZero(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(2)
+	assert.Equal(t, 0, list.CountOf(1))
+}
+
+// TestCountOf_MultipleNodesAllMatching_ShouldReturnCount tests the CountOf method with all nodes matching the value.
+func TestCountOf_MultipleNodesAllMatching_ShouldReturnCount(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	list.Append(1)
+	list.Append(1)
+	assert.Equal(t, 3, list.CountOf(1))
+}
+
+// TestCountOf_MultipleNodesNoneMatching_ShouldReturnZero tests the CountOf method with no nodes matching the value.
+func TestCountOf_MultipleNodesNoneMatching_ShouldReturnZero(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(2)
+	list.Append(3)
+	list.Append(4)
+	assert.Equal(t, 0, list.CountOf(1))
+}
+
+// TestCountOf_MultipleNodesSomeMatching_ShouldReturnCount tests the CountOf method with some nodes matching the value.
+func TestCountOf_MultipleNodesSomeMatching_ShouldReturnCount(t *testing.T) {
+	list := NewSinglyLinkedList[int]()
+	list.Append(1)
+	list.Append(2)
+	list.Append(1)
+	list.Append(3)
+	list.Append(1)
+	assert.Equal(t, 3, list.CountOf(1))
 }
